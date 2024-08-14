@@ -61,12 +61,16 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   }
+});
 
-  function setActiveButton(activeButton) {
-    const allButtons = document.querySelectorAll("#buttons .button");
-    allButtons.forEach((button) => {
-      button.classList.remove("activeButton");
-    });
-    activeButton.classList.add("activeButton");
+document.addEventListener("DOMContentLoaded", () => {
+  const authToken = localStorage.getItem("authToken");
+  const editBar = document.getElementById("edit");
+
+  if (authToken) {
+    editBar.style.display = "flex";
+    console.log("token dispo");
+  } else {
+    console.log("pas de token");
   }
 });

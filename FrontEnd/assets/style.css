@@ -170,6 +170,14 @@ nav ul {
   align-items: center;
   list-style-type: none;
 }
+nav li a {
+  text-decoration: none;
+  color: inherit;
+}
+
+nav li a:hover {
+  color: #b1663c;
+}
 nav li {
   padding: 0 10px;
   font-size: 1.2em;
@@ -190,7 +198,7 @@ li:hover {
   margin: auto;
   width: 80%;
 }
-ul > li:nth-child(4) > img {
+li:nth-child(4) > a > img {
   width: 20px;
 }
 
@@ -312,6 +320,7 @@ footer nav ul {
 #login {
   width: 50%;
   margin: auto;
+  padding-bottom: 200px;
 }
 #login > * {
   text-align: center;
@@ -334,4 +343,20 @@ footer nav ul {
 }
 #login label {
   margin: 2em 0 1em 0;
+}
+.passwordRecover a {
+  color: #3d3d3d;
+}
+
+/* ADMIN MODE */
+.edit {
+  display: none;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: black;
+  color: white;
+  text-align: center;
+  height: 30px;
+  width: 100%;
 }
