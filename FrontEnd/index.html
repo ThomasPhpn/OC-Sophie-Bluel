@@ -10,17 +10,32 @@
       href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=Work+Sans&display=swap"
       rel="stylesheet"
     />
-    <meta name="description" content="" />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="./assets/style.css" />
     <script src="scripts/script.js"></script>
   </head>
   <body>
     <div class="edit" id="edit">
+      <i class="fa-regular fa-pen-to-square"></i>
       <p>Mode édition</p>
-      <button id="logout">déconnexion</button>
+      <button id="logout">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </button>
     </div>
+    <aside class="modal" id="modal">
+      <div class="modal-wrapper">
+        <span class="close" id="close">&times;</span>
+        <p>Galerie photo</p>
+    </aside>
     <header>
-      <h1>Sophie Bluel <span>Architecte d'intérieur</span></h1>
+      <h1>
+        <a href="index.html"
+          >Sophie Bluel <span>Architecte d'intérieur</span></a
+        >
+      </h1>
       <nav>
         <ul>
           <li><a href="index.html#portfolio">Projets</a></li>
@@ -59,7 +74,13 @@
         </article>
       </section>
       <section id="portfolio">
-        <h2>Mes Projets</h2>
+        <div class="projectEdit">
+          <h2>Mes Projets</h2>
+          <button class="editButton" id="editButton">
+            <i class="fa-regular fa-pen-to-square"></i>
+            <p>Modifier</p>
+          </button>
+        </div>
         <div class="buttons" id="buttons"></div>
         <div class="gallery" id="gallery"></div>
       </section>

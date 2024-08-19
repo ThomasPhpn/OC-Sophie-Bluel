@@ -66,11 +66,38 @@ document.addEventListener("DOMContentLoaded", () => {
 document.addEventListener("DOMContentLoaded", () => {
   const authToken = localStorage.getItem("authToken");
   const editBar = document.getElementById("edit");
-
+  const editButton = document.getElementById("editButton");
+  const closeModal = document.getElementById("close");
+  const modal = document.getElementById("modal");
+  // MONTRER ADMIN BAR + BOUTON MODIFIER
   if (authToken) {
     editBar.style.display = "flex";
+    editButton.style.display = "flex";
     console.log("token dispo");
   } else {
-    console.log("pas de token");
+    editBar.style.display = "none";
+    editButton.style.display = "none";
   }
+
+  // OUVERTURE ET FERMETURE MODAL
+  editButton.addEventListener("click", () => {
+    modal.style.display = "flex";
+  });
+  closeModal.addEventListener("click", () => {
+    modal.style.display = "none";
+  });
+  window.addEventListener("click", (event) => {
+    if (event.target == modal) {
+      modal.style.display = "none";
+    }
+  });
+});
+
+// GESTION LOGOUT
+document.addEventListener("DOMContentLoaded", () => {
+  const logOutButton = document.getElementById("logout");
+  logOutButton.addEventListener("click", () => {
+    localStorage.removeItem("authToken");
+    window.location.href = "login.html";
+  });
 });
