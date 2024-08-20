@@ -8,6 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
       works = data;
       console.table(works); // TEST
       displayWorks(works);
+      displayWorksModal(works);
     })
     .catch((error) => console.error("Error:", error));
 
@@ -30,6 +31,19 @@ document.addEventListener("DOMContentLoaded", () => {
         <figcaption>${work.title}</figcaption>
       `;
       gallery.appendChild(newFigure);
+    });
+  }
+
+  function displayWorksModal(works) {
+    const modalGallery = document.getElementById("modalGallery");
+    modalGallery.innerHTML = "";
+    works.forEach((work) => {
+      const newFigure = document.createElement("figure");
+      newFigure.innerHTML = `
+        <img src="${work.imageUrl}" alt="${work.title}"/><div class="trash"><i class="fa-solid fa-trash-can"></i></div>
+      `;
+      newFigure.classList.add("modalFigure");
+      modalGallery.appendChild(newFigure);
     });
   }
 

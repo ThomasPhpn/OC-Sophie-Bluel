@@ -166,6 +166,14 @@ h2 {
   font-size: 30px;
   color: #1d6154;
 }
+h3 {
+  font-family: "Work Sans";
+  font-weight: 500;
+  font-size: 26px;
+  color: black;
+  text-align: center;
+  padding: 40px 10px;
+}
 nav ul {
   display: flex;
   align-items: center;
@@ -274,6 +282,44 @@ li:nth-child(4) > a > img {
 #contact {
   width: 50%;
   margin: auto;
+}
+/* MODAL GALLERY*/ 
+
+.modalGallery {
+  width: 75%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
+  margin: auto;
+}
+
+.modalGallery img {
+  width: 100%;
+}
+.modalFigure{
+  position:relative;
+}
+
+.trash{
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+}
+.fa-trash-can{
+  padding: 2px;
+  color: white;
+  font-size: 8px;
+  cursor: pointer;
+}
+.modal-wrapper hr {
+  width: 450px;
+  margin-top: 40px;
 }
 #contact > * {
   text-align: center;
@@ -398,6 +444,7 @@ footer nav ul {
   max-height: calc(100vh - 20px);
   overflow: auto;
   padding: 20px;
+  border-radius: 10px;
 }
 .close {
   color: #aaa;
