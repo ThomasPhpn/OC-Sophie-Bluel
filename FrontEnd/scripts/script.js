@@ -1,63 +1,73 @@
 document.addEventListener("DOMContentLoaded", () => {
-  let works = [];
-  let categories = new Set();
+  const works = [];
+  const categories = new Set();
 
-  fetch("http://localhost:5678/api/works")
-    .then((response) => response.json())
-    .then((data) => {
-      works = data;
-      console.table(works); // TEST
-      displayWorks(works);
-      displayWorksModal(works);
-    })
-    .catch((error) => console.error("Error:", error));
+  const fetchData = async (url) => {
+    try {
+      const response = await fetch(url);
+      return response.json();
+    } catch (error) {
+      console.error("Error:", error);
+      return [];
+    }
+  };
 
-  fetch("http://localhost:5678/api/categories")
-    .then((response) => response.json())
-    .then((data) => {
-      data.forEach((category) => categories.add(category));
-      console.table(Array.from(categories)); // TEST
-      displayCategories(categories);
-    })
-    .catch((error) => console.error("Error:", error));
+  const init = async () => {
+    const [worksData, categoriesData] = await Promise.all([
+      fetchData("http://localhost:5678/api/works"),
+      fetchData("http://localhost:5678/api/categories"),
+    ]);
 
-  function displayWorks(works) {
+    works.push(...worksData);
+    categoriesData.forEach((category) => categories.add(category));
+
+    console.log([worksData, categoriesData]);
+    displayWorks(works);
+    displayWorksModal(works);
+    displayCategories(categories);
+    setupEditMode();
+    setupModalNavigation();
+    setupFileUpload();
+  };
+
+  const displayWorks = (works) => {
     const gallery = document.getElementById("gallery");
-    gallery.innerHTML = "";
-    works.forEach((work) => {
-      const newFigure = document.createElement("figure");
-      newFigure.innerHTML = `
-        <img src="${work.imageUrl}" alt="${work.title}"/>
+    gallery.innerHTML = works
+      .map(
+        (work) => `
+      <figure>
+        <img src="${work.imageUrl}" alt="${work.title}" />
         <figcaption>${work.title}</figcaption>
-      `;
-      gallery.appendChild(newFigure);
-    });
-  }
+      </figure>
+    `
+      )
+      .join("");
+  };
 
-  function displayWorksModal(works) {
+  const displayWorksModal = (works) => {
     const modalGallery = document.getElementById("modalGallery");
-    modalGallery.innerHTML = "";
-    works.forEach((work) => {
-      const newFigure = document.createElement("figure");
-      newFigure.innerHTML = `
-        <img src="${work.imageUrl}" alt="${work.title}"/>
+    modalGallery.innerHTML = works
+      .map(
+        (work) => `
+      <figure class="modalFigure">
+        <img src="${work.imageUrl}" alt="${work.title}" />
         <div class="trash" id="trash-${work.id}">
           <i class="fa-solid fa-trash-can"></i>
         </div>
-      `;
-      newFigure.classList.add("modalFigure");
-      modalGallery.appendChild(newFigure);
+      </figure>
+    `
+      )
+      .join("");
 
-      const trashIcon = newFigure.querySelector(`#trash-${work.id}`);
-      trashIcon.addEventListener("click", () => {
-        deleteWork(work.id);
-      });
+    works.forEach((work) => {
+      document
+        .querySelector(`#trash-${work.id}`)
+        .addEventListener("click", () => deleteWork(work.id));
     });
-  }
+  };
 
-  async function deleteWork(workId) {
+  const deleteWork = async (workId) => {
     const authToken = localStorage.getItem("authToken");
-
     try {
       const response = await fetch(
         `http://localhost:5678/api/works/${workId}`,
@@ -69,117 +79,143 @@ document.addEventListener("DOMContentLoaded", () => {
           },
         }
       );
-
       if (response.ok) {
-        console.log(`Work ${workId} deleted successfully.`);
-
         document.querySelector(`#trash-${workId}`).parentElement.remove();
-
-        works = works.filter((work) => work.id !== workId);
-        displayWorks(works);
+        const updatedWorks = works.filter((work) => work.id !== workId);
+        displayWorks(updatedWorks);
       } else {
         console.error(`Failed to delete work ${workId}`);
       }
     } catch (error) {
       console.error("Error:", error);
     }
-  }
+  };
 
-  function displayCategories(categories) {
+  const setActiveButton = (activeButton) => {
+    const buttons = document.querySelectorAll(".button");
+    buttons.forEach((button) => {
+      button.classList.remove("activeButton");
+    });
+    activeButton.classList.add("activeButton");
+  };
+
+  const displayCategories = (categories) => {
     const buttons = document.getElementById("buttons");
+    const addPhotoCategory = document.getElementById("category");
+
+    buttons.innerHTML = "";
+
     const generalButton = document.createElement("button");
-    generalButton.textContent = "Tous";
-    generalButton.classList.add("button");
+    generalButton.className = "button activeButton";
     generalButton.id = "tous";
+    generalButton.textContent = "Tous";
     buttons.appendChild(generalButton);
+
     generalButton.addEventListener("click", () => {
       displayWorks(works);
       setActiveButton(generalButton);
     });
 
     categories.forEach((category) => {
-      const newButton = document.createElement("button");
-      newButton.textContent = category.name;
-      newButton.classList.add("button");
-      newButton.id = category.id;
-      buttons.appendChild(newButton);
-
-      newButton.addEventListener("click", () => {
+      const button = document.createElement("button");
+      button.className = "button";
+      button.id = category.id;
+      button.textContent = category.name;
+      button.addEventListener("click", () => {
         const filteredWorks = works.filter(
           (work) => work.category.id === category.id
         );
         displayWorks(filteredWorks);
-        setActiveButton(newButton);
+        setActiveButton(button);
       });
+      buttons.appendChild(button);
+
+      const option = document.createElement("option");
+      option.value = category.name;
+      option.textContent = category.name;
+      addPhotoCategory.appendChild(option);
     });
-  }
-});
+  };
 
-document.addEventListener("DOMContentLoaded", () => {
-  const authToken = localStorage.getItem("authToken");
-  const editBar = document.getElementById("edit");
-  const editButton = document.getElementById("editButton");
-  const closeModal = document.getElementById("close");
-  const modal = document.getElementById("modal");
-  // MONTRER ADMIN BAR + BOUTON MODIFIER
-  if (authToken) {
-    editBar.style.display = "flex";
-    editButton.style.display = "flex";
-    console.log("token dispo");
-  } else {
-    editBar.style.display = "none";
-    editButton.style.display = "none";
-  }
+  const setupEditMode = () => {
+    const authToken = localStorage.getItem("authToken");
+    const editBar = document.getElementById("edit");
+    const editButton = document.getElementById("editButton");
 
-  // OUVERTURE ET FERMETURE MODAL
-  editButton.addEventListener("click", () => {
-    modal.style.display = "flex";
-  });
-  closeModal.addEventListener("click", () => {
-    modal.style.display = "none";
-  });
-  window.addEventListener("click", (event) => {
-    if (event.target == modal) {
-      modal.style.display = "none";
+    if (authToken) {
+      editBar.style.display = "flex";
+      editButton.style.display = "flex";
+    } else {
+      editBar.style.display = "none";
+      editButton.style.display = "none";
     }
-  });
-});
 
-// GESTION LOGOUT
-document.addEventListener("DOMContentLoaded", () => {
-  const logOutButton = document.getElementById("logout");
-  logOutButton.addEventListener("click", () => {
-    localStorage.removeItem("authToken");
-    window.location.href = "login.html";
-  });
-});
+    editButton.addEventListener("click", () => {
+      document.getElementById("modal").style.display = "flex";
+    });
 
-// MODAL - AJOUT PHOTO
+    document.getElementById("close").addEventListener("click", () => {
+      document.getElementById("modal").style.display = "none";
+    });
 
-document.addEventListener("DOMContentLoaded", () => {
-  const addPhotoButton = document.querySelector(".addPhoto");
-  const modalGallery = document.getElementById("modal");
-  const modalAddPhoto = document.getElementById("modalAddPhoto");
-  const closeAddPhoto = document.getElementById("closeAddPhoto");
-  const backToGallery = document.getElementById("backToGallery");
+    window.addEventListener("click", (event) => {
+      if (event.target == document.getElementById("modal")) {
+        document.getElementById("modal").style.display = "none";
+      }
+    });
 
-  addPhotoButton.addEventListener("click", () => {
-    modalGallery.style.display = "none";
-    modalAddPhoto.style.display = "flex";
-  });
+    document.getElementById("logout").addEventListener("click", () => {
+      localStorage.removeItem("authToken");
+      window.location.href = "index.html";
+    });
+  };
 
-  closeAddPhoto.addEventListener("click", () => {
-    modalAddPhoto.style.display = "none";
-  });
+  const setupModalNavigation = () => {
+    const addPhotoButton = document.querySelector(".addPhoto");
+    const modalGallery = document.getElementById("modal");
+    const modalAddPhoto = document.getElementById("modalAddPhoto");
 
-  backToGallery.addEventListener("click", () => {
-    modalAddPhoto.style.display = "none";
-    modalGallery.style.display = "flex";
-  });
+    addPhotoButton.addEventListener("click", () => {
+      modalGallery.style.display = "none";
+      modalAddPhoto.style.display = "flex";
+    });
 
-  window.addEventListener("click", (event) => {
-    if (event.target == modalAddPhoto) {
+    document.getElementById("closeAddPhoto").addEventListener("click", () => {
       modalAddPhoto.style.display = "none";
-    }
-  });
+    });
+
+    document.getElementById("backToGallery").addEventListener("click", () => {
+      modalAddPhoto.style.display = "none";
+      modalGallery.style.display = "flex";
+    });
+
+    window.addEventListener("click", (event) => {
+      if (event.target == modalAddPhoto) {
+        modalAddPhoto.style.display = "none";
+      }
+    });
+  };
+
+  const setupFileUpload = () => {
+    const fileInput = document.getElementById("fileInput");
+    const uploadButton = document.getElementById("uploadButton");
+    const previewImage = document.getElementById("previewImage");
+
+    uploadButton.addEventListener("click", () => {
+      fileInput.click();
+    });
+
+    fileInput.addEventListener("change", (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          previewImage.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  };
+
+  init();
 });

@@ -42,21 +42,29 @@
         ></span>
         <h3>Ajout photo</h3>
         <form id="addPhotoForm">
-          <div class="form-group">
-            <label for="photo">+ Ajouter photo</label>
+          <div class="form-group inputPhoto">
+            <img
+              id="previewImage"
+              src="/FrontEnd/assets/images/input-img.png"
+            />
             <input
               type="file"
-              id="photo"
+              id="fileInput"
+              style="display: none"
               accept="image/png, image/jpeg"
               required
             />
+            <button class="ctaButton" id="uploadButton">
+              Ajouter une photo
+            </button>
+            <p id="photoInfo" class="photo-information">jpg, png : 4mo max</p>
           </div>
           <div class="form-group">
-            <label for="title">Titre</label>
+            <label for="title" class="modalFormAdd">Titre</label>
             <input type="text" id="title" required />
           </div>
           <div class="form-group">
-            <label for="category">Catégorie</label>
+            <label for="category" class="modalFormAdd">Catégorie</label>
             <select id="category" required></select>
           </div>
           <hr />
