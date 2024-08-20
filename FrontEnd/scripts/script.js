@@ -40,11 +40,49 @@ document.addEventListener("DOMContentLoaded", () => {
     works.forEach((work) => {
       const newFigure = document.createElement("figure");
       newFigure.innerHTML = `
-        <img src="${work.imageUrl}" alt="${work.title}"/><div class="trash"><i class="fa-solid fa-trash-can"></i></div>
+        <img src="${work.imageUrl}" alt="${work.title}"/>
+        <div class="trash" id="trash-${work.id}">
+          <i class="fa-solid fa-trash-can"></i>
+        </div>
       `;
       newFigure.classList.add("modalFigure");
       modalGallery.appendChild(newFigure);
+
+      const trashIcon = newFigure.querySelector(`#trash-${work.id}`);
+      trashIcon.addEventListener("click", () => {
+        deleteWork(work.id);
+      });
     });
+  }
+
+  async function deleteWork(workId) {
+    const authToken = localStorage.getItem("authToken");
+
+    try {
+      const response = await fetch(
+        `http://localhost:5678/api/works/${workId}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.ok) {
+        console.log(`Work ${workId} deleted successfully.`);
+
+        document.querySelector(`#trash-${workId}`).parentElement.remove();
+
+        works = works.filter((work) => work.id !== workId);
+        displayWorks(works);
+      } else {
+        console.error(`Failed to delete work ${workId}`);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
   }
 
   function displayCategories(categories) {
@@ -113,5 +151,35 @@ document.addEventListener("DOMContentLoaded", () => {
   logOutButton.addEventListener("click", () => {
     localStorage.removeItem("authToken");
     window.location.href = "login.html";
+  });
+});
+
+// MODAL - AJOUT PHOTO
+
+document.addEventListener("DOMContentLoaded", () => {
+  const addPhotoButton = document.querySelector(".addPhoto");
+  const modalGallery = document.getElementById("modal");
+  const modalAddPhoto = document.getElementById("modalAddPhoto");
+  const closeAddPhoto = document.getElementById("closeAddPhoto");
+  const backToGallery = document.getElementById("backToGallery");
+
+  addPhotoButton.addEventListener("click", () => {
+    modalGallery.style.display = "none";
+    modalAddPhoto.style.display = "flex";
+  });
+
+  closeAddPhoto.addEventListener("click", () => {
+    modalAddPhoto.style.display = "none";
+  });
+
+  backToGallery.addEventListener("click", () => {
+    modalAddPhoto.style.display = "none";
+    modalGallery.style.display = "flex";
+  });
+
+  window.addEventListener("click", (event) => {
+    if (event.target == modalAddPhoto) {
+      modalAddPhoto.style.display = "none";
+    }
   });
 });

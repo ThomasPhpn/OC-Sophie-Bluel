@@ -30,7 +30,39 @@
         <span class="close" id="close">&times;</span>
         <h3>Galerie photo</h3>
         <div class="modalGallery" id="modalGallery"></div>
-        <hr>
+        <hr />
+        <button class="addPhoto">Ajouter une photo</button>
+      </div>
+    </aside>
+    <aside class="modal" id="modalAddPhoto" style="display: none">
+      <div class="modal-wrapper">
+        <span class="close" id="closeAddPhoto">&times;</span>
+        <span class="back" id="backToGallery"
+          ><i class="fa-solid fa-arrow-left"></i
+        ></span>
+        <h3>Ajout photo</h3>
+        <form id="addPhotoForm">
+          <div class="form-group">
+            <label for="photo">+ Ajouter photo</label>
+            <input
+              type="file"
+              id="photo"
+              accept="image/png, image/jpeg"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="title">Titre</label>
+            <input type="text" id="title" required />
+          </div>
+          <div class="form-group">
+            <label for="category">Catégorie</label>
+            <select id="category" required></select>
+          </div>
+          <hr />
+          <button type="submit" class="submitButton">Valider</button>
+        </form>
+      </div>
     </aside>
     <header>
       <h1>

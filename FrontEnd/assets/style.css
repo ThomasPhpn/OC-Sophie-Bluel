@@ -283,44 +283,7 @@ li:nth-child(4) > a > img {
   width: 50%;
   margin: auto;
 }
-/* MODAL GALLERY*/ 
 
-.modalGallery {
-  width: 75%;
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-  grid-column-gap: 10px;
-  grid-row-gap: 10px;
-  margin: auto;
-}
-
-.modalGallery img {
-  width: 100%;
-}
-.modalFigure{
-  position:relative;
-}
-
-.trash{
-  position: absolute;
-  top: 3px;
-  right: 3px;
-  background-color: black;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 13px;
-}
-.fa-trash-can{
-  padding: 2px;
-  color: white;
-  font-size: 8px;
-  cursor: pointer;
-}
-.modal-wrapper hr {
-  width: 450px;
-  margin-top: 40px;
-}
 #contact > * {
   text-align: center;
 }
@@ -425,6 +388,9 @@ footer nav ul {
 .editButton:hover {
   color: #b1663c;
 }
+
+/* MODAL GALLERY*/
+
 .modal {
   position: fixed;
   top: 0;
@@ -445,11 +411,90 @@ footer nav ul {
   overflow: auto;
   padding: 20px;
   border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 }
 .close {
-  color: #aaa;
-  float: right;
+  position: absolute;
+  right: 10px;
+  top: 10px;
   font-size: 28px;
   font-weight: bold;
+  cursor: pointer;
+}
+.back {
+  position: absolute;
+  left: 10px;
+  top: 15px;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.modalGallery {
+  width: 75%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+  grid-column-gap: 10px;
+  grid-row-gap: 10px;
+  margin: auto;
+}
+
+.modalGallery img {
+  width: 100%;
+}
+.modalFigure {
+  position: relative;
+}
+
+.trash {
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  background-color: black;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+}
+.fa-trash-can {
+  padding: 2px;
+  color: white;
+  font-size: 8px;
+  cursor: pointer;
+}
+.modal-wrapper hr {
+  width: 450px;
+  margin-top: 40px;
+}
+.addPhoto {
+  margin-top: 30px;
+  font-family: "Syne";
+  font-weight: 500;
+  color: #fffef8;
+  border: none;
+  background-color: #1d6154;
+  text-align: center;
+  padding: 5px 60px 5px 60px;
+  border-radius: 60px;
+  height: 50px;
+  font-size: 14px;
+  cursor: pointer;
+}
+.submitButton {
+  margin-top: 30px;
+  font-family: "Syne";
+  font-weight: 500;
+  color: #fffef8;
+  border: none;
+  background-color: #1d6154;
+  text-align: center;
+  padding: 5px 60px 5px 60px;
+  border-radius: 60px;
+  height: 50px;
+  font-size: 14px;
   cursor: pointer;
 }
