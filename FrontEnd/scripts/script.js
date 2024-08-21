@@ -1,110 +1,119 @@
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function () {
   const works = [];
   const categories = new Set();
 
-  const fetchData = async (url) => {
-    try {
-      const response = await fetch(url);
-      return response.json();
-    } catch (error) {
-      console.error("Error:", error);
-      return [];
-    }
-  };
+  // Fonction de récupération des données
+  function fetchData(url) {
+    return fetch(url)
+      .then((response) => {
+        return response.json();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        return [];
+      });
+  }
 
-  const init = async () => {
-    const [worksData, categoriesData] = await Promise.all([
-      fetchData("http://localhost:5678/api/works"),
-      fetchData("http://localhost:5678/api/categories"),
-    ]);
+  // Initialisation
+  function init() {
+    // Récupérer les WORKS
+    fetchData("http://localhost:5678/api/works").then((worksData) => {
+      works.push(...worksData);
 
-    works.push(...worksData);
-    categoriesData.forEach((category) => categories.add(category));
+      // Récupérer les CATEGORIES
+      fetchData("http://localhost:5678/api/categories").then(
+        (categoriesData) => {
+          categoriesData.forEach((category) => {
+            categories.add(category);
+          });
 
-    console.log([worksData, categoriesData]);
-    displayWorks(works);
-    displayWorksModal(works);
-    displayCategories(categories);
-    setupEditMode();
-    setupModalNavigation();
-    setupFileUpload();
-  };
+          // TEST
+          console.log([worksData, categoriesData]);
 
-  const displayWorks = (works) => {
+          // Appeler mes fonctions
+          displayWorks(works);
+          displayWorksModal(works);
+          displayCategories(categories);
+          setupEditMode();
+          setupModalNavigation();
+          newWork();
+        }
+      );
+    });
+  }
+
+  // Afficher travaux dans "Mes projets"
+  function displayWorks(works) {
     const gallery = document.getElementById("gallery");
     gallery.innerHTML = works
-      .map(
-        (work) => `
-      <figure>
-        <img src="${work.imageUrl}" alt="${work.title}" />
-        <figcaption>${work.title}</figcaption>
-      </figure>
-    `
-      )
+      .map((work) => {
+        return `
+        <figure>
+          <img src="${work.imageUrl}" alt="${work.title}" />
+          <figcaption>${work.title}</figcaption>
+        </figure>`;
+      })
       .join("");
-  };
+  }
 
-  const displayWorksModal = (works) => {
+  // Afficher travaux dans ma modale
+  function displayWorksModal(works) {
     const modalGallery = document.getElementById("modalGallery");
     modalGallery.innerHTML = works
-      .map(
-        (work) => `
-      <figure class="modalFigure">
-        <img src="${work.imageUrl}" alt="${work.title}" />
-        <div class="trash" id="trash-${work.id}">
-          <i class="fa-solid fa-trash-can"></i>
-        </div>
-      </figure>
-    `
-      )
+      .map((work) => {
+        return `
+        <figure class="modalFigure">
+          <img src="${work.imageUrl}" alt="${work.title}" />
+          <div class="trash" id="trash-${work.id}">
+            <i class="fa-solid fa-trash-can"></i>
+          </div>
+        </figure>`;
+      })
       .join("");
 
     works.forEach((work) => {
       document
-        .querySelector(`#trash-${work.id}`)
-        .addEventListener("click", () => deleteWork(work.id));
+        .querySelector("#trash-" + work.id)
+        .addEventListener("click", () => {
+          deleteWork(work.id);
+        });
     });
-  };
+  }
 
-  const deleteWork = async (workId) => {
+  // Supprimer un WORK
+  function deleteWork(workNumber) {
     const authToken = localStorage.getItem("authToken");
-    try {
-      const response = await fetch(
-        `http://localhost:5678/api/works/${workId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-            "Content-Type": "application/json",
-          },
+
+    fetch("http://localhost:5678/api/works/" + workNumber, {
+      method: "DELETE",
+      headers: {
+        Authorization: "Bearer " + authToken,
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => {
+        if (response.ok) {
+          document.querySelector("#trash-" + workNumber).parentElement.remove();
+          const updatedWorks = works.filter((work) => {
+            return work.id !== workNumber;
+          });
+          displayWorks(updatedWorks);
+        } else {
+          console.error("Failed to delete work " + workNumber);
         }
-      );
-      if (response.ok) {
-        document.querySelector(`#trash-${workId}`).parentElement.remove();
-        const updatedWorks = works.filter((work) => work.id !== workId);
-        displayWorks(updatedWorks);
-      } else {
-        console.error(`Failed to delete work ${workId}`);
-      }
-    } catch (error) {
-      console.error("Error:", error);
-    }
-  };
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
 
-  const setActiveButton = (activeButton) => {
-    const buttons = document.querySelectorAll(".button");
-    buttons.forEach((button) => {
-      button.classList.remove("activeButton");
-    });
-    activeButton.classList.add("activeButton");
-  };
-
-  const displayCategories = (categories) => {
+  // Afficher les filtres (Mes projets + modale)
+  function displayCategories(categories) {
     const buttons = document.getElementById("buttons");
     const addPhotoCategory = document.getElementById("category");
 
     buttons.innerHTML = "";
-
+    // Créer bouton TOUS
     const generalButton = document.createElement("button");
     generalButton.className = "button activeButton";
     generalButton.id = "tous";
@@ -122,9 +131,9 @@ document.addEventListener("DOMContentLoaded", () => {
       button.id = category.id;
       button.textContent = category.name;
       button.addEventListener("click", () => {
-        const filteredWorks = works.filter(
-          (work) => work.category.id === category.id
-        );
+        const filteredWorks = works.filter((work) => {
+          return work.category.id === category.id;
+        });
         displayWorks(filteredWorks);
         setActiveButton(button);
       });
@@ -135,9 +144,10 @@ document.addEventListener("DOMContentLoaded", () => {
       option.textContent = category.name;
       addPhotoCategory.appendChild(option);
     });
-  };
+  }
 
-  const setupEditMode = () => {
+  // Mode ADMIN
+  function setupEditMode() {
     const authToken = localStorage.getItem("authToken");
     const editBar = document.getElementById("edit");
     const editButton = document.getElementById("editButton");
@@ -163,14 +173,15 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("modal").style.display = "none";
       }
     });
-
+    // LOGOUT, pour faire des tests - à supprimer
     document.getElementById("logout").addEventListener("click", () => {
       localStorage.removeItem("authToken");
       window.location.href = "index.html";
     });
-  };
+  }
 
-  const setupModalNavigation = () => {
+  // MODALE
+  function setupModalNavigation() {
     const addPhotoButton = document.querySelector(".addPhoto");
     const modalGallery = document.getElementById("modal");
     const modalAddPhoto = document.getElementById("modalAddPhoto");
@@ -194,28 +205,10 @@ document.addEventListener("DOMContentLoaded", () => {
         modalAddPhoto.style.display = "none";
       }
     });
-  };
+  }
 
-  const setupFileUpload = () => {
-    const fileInput = document.getElementById("fileInput");
-    const uploadButton = document.getElementById("uploadButton");
-    const previewImage = document.getElementById("previewImage");
-
-    uploadButton.addEventListener("click", () => {
-      fileInput.click();
-    });
-
-    fileInput.addEventListener("change", (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          previewImage.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  };
+  // Ajouter un WORK
+  function newWork() {}
 
   init();
 });

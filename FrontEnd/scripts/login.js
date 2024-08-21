@@ -21,8 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         localStorage.setItem("authToken", data.token);
 
-        // TEST console.log("Token d'authentification :", data.token);
-
         window.location.href = "index.html";
       } else {
         displayErrorMessage("Email ou mot de passe incorrect.");
@@ -37,14 +35,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function displayErrorMessage(message) {
     let errorElement = document.getElementById("error-message");
-
-    if (!errorElement) {
-      errorElement = document.createElement("p");
-      errorElement.id = "error-message";
-      errorElement.style.color = "red";
-      form.prepend(errorElement);
-    }
-
+    errorElement.style.display = "flex";
+    errorElement.style.color = "red";
     errorElement.textContent = message;
   }
 });

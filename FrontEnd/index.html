@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+  <!-- HEAD -->
   <head>
     <meta charset="UTF-8" />
     <title>Sophie Bluel - Architecte d'intérieur</title>
@@ -18,14 +19,16 @@
     <script src="scripts/script.js"></script>
   </head>
   <body>
-    <div class="edit" id="edit">
+    <!-- ADMIN BAR -->
+    <div class="edit" id="edit" style="display: none">
       <i class="fa-regular fa-pen-to-square"></i>
       <p>Mode édition</p>
       <button id="logout">
         <i class="fa-solid fa-right-from-bracket"></i>
       </button>
     </div>
-    <aside class="modal" id="modal">
+    <!-- MODALE 1 -->
+    <aside class="modal" id="modal" style="display: none">
       <div class="modal-wrapper">
         <span class="close" id="close">&times;</span>
         <h3>Galerie photo</h3>
@@ -34,6 +37,7 @@
         <button class="addPhoto">Ajouter une photo</button>
       </div>
     </aside>
+    <!-- MODALE 2 -->
     <aside class="modal" id="modalAddPhoto" style="display: none">
       <div class="modal-wrapper">
         <span class="close" id="closeAddPhoto">&times;</span>
@@ -50,7 +54,6 @@
             <input
               type="file"
               id="fileInput"
-              style="display: none"
               accept="image/png, image/jpeg"
               required
             />
@@ -72,6 +75,7 @@
         </form>
       </div>
     </aside>
+    <!-- NAVIGATION -->
     <header>
       <h1>
         <a href="index.html"
@@ -92,6 +96,7 @@
       </nav>
     </header>
     <main>
+      <!-- MASTHEAD -->
       <section id="introduction">
         <figure>
           <img src="./assets/images/sophie-bluel.png" alt="" />
@@ -115,10 +120,11 @@
           </p>
         </article>
       </section>
+      <!-- PORTFOLIO -->
       <section id="portfolio">
         <div class="projectEdit">
           <h2>Mes Projets</h2>
-          <button class="editButton" id="editButton">
+          <button class="editButton" id="editButton" style="display: none">
             <i class="fa-regular fa-pen-to-square"></i>
             <p>Modifier</p>
           </button>
@@ -126,6 +132,7 @@
         <div class="buttons" id="buttons"></div>
         <div class="gallery" id="gallery"></div>
       </section>
+      <!-- CONTACT -->
       <section id="contact">
         <h2>Contact</h2>
         <p>Vous avez un projet ? Discutons-en !</p>
