@@ -146,6 +146,14 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
+  function setActiveButton(activeButton) {
+    const buttons = document.querySelectorAll("#buttons .button");
+    buttons.forEach((button) => {
+      button.classList.remove("activeButton");
+    });
+    activeButton.classList.add("activeButton");
+  }
+
   // Mode ADMIN
   function setupEditMode() {
     const authToken = localStorage.getItem("authToken");
@@ -155,6 +163,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (authToken) {
       editBar.style.display = "flex";
       editButton.style.display = "flex";
+      buttons.style.display = "none";
     } else {
       editBar.style.display = "none";
       editButton.style.display = "none";
