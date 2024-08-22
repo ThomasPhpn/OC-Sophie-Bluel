@@ -209,38 +209,59 @@ document.addEventListener("DOMContentLoaded", function () {
 
   // Ajouter un WORK
   function newWork() {
-    document
-      .getElementById("addPhotoForm")
-      .addEventListener("submit", async (event) => {
-        event.preventDefault();
+    const form = document.getElementById("addPhotoForm");
+    const submitButton = form.querySelector("button[type='submit']");
+    const newWorkTitle = document.getElementById("newWorkTitle");
+    const categoryValue = document.getElementById("category");
+    const newWorkImage = document.getElementById("fileInput");
 
-        const newWorkTitle = document.getElementById("newWorkTitle").value;
-        const categoryValue = document.getElementById("category").value;
-        const newWorkImage = document.getElementById("fileInput").files[0];
+    function updateButtonClass() {
+      if (
+        newWorkTitle.value.trim() === "" ||
+        categoryValue.value === "" ||
+        !newWorkImage.files[0]
+      ) {
+        submitButton.classList.remove("submitButton");
+        submitButton.classList.add("submitButtonNotReady");
+        submitButton.disabled = true;
+      } else {
+        submitButton.classList.remove("submitButtonNotReady");
+        submitButton.classList.add("submitButton");
+        submitButton.disabled = false;
+      }
+    }
 
-        const workToPost = new FormData();
-        workToPost.append("title", newWorkTitle);
-        workToPost.append("category", categoryValue);
-        workToPost.append("image", newWorkImage);
+    newWorkTitle.addEventListener("input", updateButtonClass);
+    categoryValue.addEventListener("change", updateButtonClass);
+    newWorkImage.addEventListener("change", updateButtonClass);
 
-        try {
-          const response = await fetch("http://localhost:5678/api/works", {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
-            },
-            body: workToPost,
-          });
+    updateButtonClass();
 
-          if (response.ok) {
-            console.log("ça a fonctionné");
-            init();
-          } else console.error(response.status);
-        } catch (error) {
-          console.error("ça n'a pas fonctionné", error);
-        }
-      });
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const workToPost = new FormData();
+      workToPost.append("title", newWorkTitle.value);
+      workToPost.append("category", categoryValue.value);
+      workToPost.append("image", newWorkImage.files[0]);
+
+      try {
+        const response = await fetch("http://localhost:5678/api/works", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+          },
+          body: workToPost,
+        });
+
+        if (response.ok) {
+          console.log("ça a fonctionné");
+          init();
+        } else console.error(response.status);
+      } catch (error) {
+        console.error("ça n'a pas fonctionné", error);
+      }
+    });
   }
-
   init();
 });

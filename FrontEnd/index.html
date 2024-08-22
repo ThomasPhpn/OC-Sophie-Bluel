@@ -134,6 +134,7 @@
               type="file"
               id="fileInput"
               accept="image/png, image/jpeg"
+              display="none"
               required
             />
             <button class="ctaButton" id="uploadButton">
@@ -150,7 +151,9 @@
             <select id="category" required></select>
           </div>
           <hr />
-          <button type="submit" class="submitButton">Valider</button>
+          <div class="flex-center">
+            <button type="submit" class="submitButtonNotReady">Valider</button>
+          </div>
         </form>
       </div>
     </aside>
