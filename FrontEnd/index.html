@@ -19,7 +19,7 @@
     <script src="scripts/script.js"></script>
   </head>
   <body>
-    <!-- ADMIN BAR -->
+    <!-- ADMIN BAR à changer -->
     <div class="edit" id="edit" style="display: none">
       <i class="fa-regular fa-pen-to-square"></i>
       <p>Mode édition</p>
@@ -27,54 +27,6 @@
         <i class="fa-solid fa-right-from-bracket"></i>
       </button>
     </div>
-    <!-- MODALE 1 -->
-    <aside class="modal" id="modal" style="display: none">
-      <div class="modal-wrapper">
-        <span class="close" id="close">&times;</span>
-        <h3>Galerie photo</h3>
-        <div class="modalGallery" id="modalGallery"></div>
-        <hr />
-        <button class="addPhoto">Ajouter une photo</button>
-      </div>
-    </aside>
-    <!-- MODALE 2 -->
-    <aside class="modal" id="modalAddPhoto" style="display: none">
-      <div class="modal-wrapper">
-        <span class="close" id="closeAddPhoto">&times;</span>
-        <span class="back" id="backToGallery"
-          ><i class="fa-solid fa-arrow-left"></i
-        ></span>
-        <h3>Ajout photo</h3>
-        <form id="addPhotoForm">
-          <div class="form-group inputPhoto">
-            <img
-              id="previewImage"
-              src="/FrontEnd/assets/images/input-img.png"
-            />
-            <input
-              type="file"
-              id="fileInput"
-              accept="image/png, image/jpeg"
-              required
-            />
-            <button class="ctaButton" id="uploadButton">
-              Ajouter une photo
-            </button>
-            <p id="photoInfo" class="photo-information">jpg, png : 4mo max</p>
-          </div>
-          <div class="form-group">
-            <label for="title" class="modalFormAdd">Titre</label>
-            <input type="text" id="title" required />
-          </div>
-          <div class="form-group">
-            <label for="category" class="modalFormAdd">Catégorie</label>
-            <select id="category" required></select>
-          </div>
-          <hr />
-          <button type="submit" class="submitButton">Valider</button>
-        </form>
-      </div>
-    </aside>
     <!-- NAVIGATION -->
     <header>
       <h1>
@@ -154,5 +106,53 @@
         </ul>
       </nav>
     </footer>
+    <!-- MODALE 1 -->
+    <aside class="modal" id="modal" style="display: none">
+      <div class="modal-wrapper">
+        <span class="close" id="close">&times;</span>
+        <h3>Galerie photo</h3>
+        <div class="modalGallery" id="modalGallery"></div>
+        <hr />
+        <button class="addPhoto">Ajouter une photo</button>
+      </div>
+    </aside>
+    <!-- MODALE 2 -->
+    <aside class="modal" id="modalAddPhoto" style="display: none">
+      <div class="modal-wrapper">
+        <span class="close" id="closeAddPhoto">&times;</span>
+        <span class="back" id="backToGallery"
+          ><i class="fa-solid fa-arrow-left"></i
+        ></span>
+        <h3>Ajout photo</h3>
+        <form id="addPhotoForm">
+          <div class="form-group inputPhoto">
+            <img
+              id="previewImage"
+              src="/FrontEnd/assets/images/input-img.png"
+            />
+            <input
+              type="file"
+              id="fileInput"
+              accept="image/png, image/jpeg"
+              required
+            />
+            <button class="ctaButton" id="uploadButton">
+              Ajouter une photo
+            </button>
+            <p id="photoInfo" class="photo-information">jpg, png : 4mo max</p>
+          </div>
+          <div class="form-group">
+            <label for="title" class="modalFormAdd">Titre</label>
+            <input type="text" id="newWorkTitle" required />
+          </div>
+          <div class="form-group">
+            <label for="category" class="modalFormAdd">Catégorie</label>
+            <select id="category" required></select>
+          </div>
+          <hr />
+          <button type="submit" class="submitButton">Valider</button>
+        </form>
+      </div>
+    </aside>
   </body>
 </html>

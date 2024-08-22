@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", function () {
       displayWorks(works);
       setActiveButton(generalButton);
     });
-
+    // Filtres portfolio
     categories.forEach((category) => {
       const button = document.createElement("button");
       button.className = "button";
@@ -138,9 +138,9 @@ document.addEventListener("DOMContentLoaded", function () {
         setActiveButton(button);
       });
       buttons.appendChild(button);
-
+      // Filtres modale
       const option = document.createElement("option");
-      option.value = category.name;
+      option.value = category.id;
       option.textContent = category.name;
       addPhotoCategory.appendChild(option);
     });
@@ -208,7 +208,39 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // Ajouter un WORK
-  function newWork() {}
+  function newWork() {
+    document
+      .getElementById("addPhotoForm")
+      .addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const newWorkTitle = document.getElementById("newWorkTitle").value;
+        const categoryValue = document.getElementById("category").value;
+        const newWorkImage = document.getElementById("fileInput").files[0];
+
+        const workToPost = new FormData();
+        workToPost.append("title", newWorkTitle);
+        workToPost.append("category", categoryValue);
+        workToPost.append("image", newWorkImage);
+
+        try {
+          const response = await fetch("http://localhost:5678/api/works", {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("authToken")}`,
+            },
+            body: workToPost,
+          });
+
+          if (response.ok) {
+            console.log("ça a fonctionné");
+            init();
+          } else console.error(response.status);
+        } catch (error) {
+          console.error("ça n'a pas fonctionné", error);
+        }
+      });
+  }
 
   init();
 });
