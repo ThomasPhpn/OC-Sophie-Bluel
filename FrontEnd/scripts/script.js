@@ -159,14 +159,25 @@ document.addEventListener("DOMContentLoaded", function () {
     const authToken = localStorage.getItem("authToken");
     const editBar = document.getElementById("edit");
     const editButton = document.getElementById("editButton");
+    const loginLink = document.querySelector('a[href="login.html"]');
 
     if (authToken) {
       editBar.style.display = "flex";
       editButton.style.display = "flex";
       buttons.style.display = "none";
+
+      loginLink.textContent = "Logout";
+      loginLink.href = "#";
+      loginLink.addEventListener("click", () => {
+        localStorage.removeItem("authToken");
+        window.location.href = "index.html";
+      });
     } else {
       editBar.style.display = "none";
       editButton.style.display = "none";
+
+      loginLink.textContent = "Login";
+      loginLink.href = "login.html";
     }
 
     editButton.addEventListener("click", () => {
@@ -174,18 +185,13 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById("close").addEventListener("click", () => {
-      document.getElementById("modal").style.display = "none";
+      document.getElementId("modal").style.display = "none";
     });
 
     window.addEventListener("click", (event) => {
       if (event.target == document.getElementById("modal")) {
         document.getElementById("modal").style.display = "none";
       }
-    });
-    // LOGOUT, pour faire des tests - à supprimer
-    document.getElementById("logout").addEventListener("click", () => {
-      localStorage.removeItem("authToken");
-      window.location.href = "index.html";
     });
   }
 
@@ -223,6 +229,28 @@ document.addEventListener("DOMContentLoaded", function () {
     const newWorkTitle = document.getElementById("newWorkTitle");
     const categoryValue = document.getElementById("category");
     const newWorkImage = document.getElementById("fileInput");
+    const previewImage = document.getElementById("previewImage");
+
+    document
+      .getElementById("uploadButton")
+      .addEventListener("click", function () {
+        document.getElementById("fileInput").click();
+      });
+
+    newWorkImage.addEventListener("change", function () {
+      const file = newWorkImage.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (event) {
+          previewImage.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+        document.getElementById("uploadButton").style.display = "none";
+        document.getElementById("photoInfo").style.display = "none";
+      } else {
+        previewImage.src = "/FrontEnd/assets/images/input-img.png";
+      }
+    });
 
     function updateButtonClass() {
       if (
@@ -264,7 +292,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         if (response.ok) {
-          console.log("ça a fonctionné");
+          console.log("Yeees");
           init();
         } else console.error(response.status);
       } catch (error) {
