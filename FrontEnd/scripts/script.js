@@ -56,6 +56,37 @@ document.addEventListener("DOMContentLoaded", function () {
       .join("");
   }
 
+  // ** Ajouter un nouveau WORK dans la galerie sans tout recharger
+  function addNewWorkToGallery(newWork) {
+    // ** Ajouter dans la galerie principale
+    const gallery = document.getElementById("gallery");
+    const figure = document.createElement("figure");
+    figure.innerHTML = `
+      <img src="${newWork.imageUrl}" alt="${newWork.title}" />
+      <figcaption>${newWork.title}</figcaption>
+    `;
+    gallery.appendChild(figure);
+
+    // ** Ajouter dans la galerie modale
+    const modalGallery = document.getElementById("modalGallery");
+    const modalFigure = document.createElement("figure");
+    modalFigure.classList.add("modalFigure");
+    modalFigure.innerHTML = `
+      <img src="${newWork.imageUrl}" alt="${newWork.title}" />
+      <div class="trash" id="trash-${newWork.id}">
+        <i class="fa-solid fa-trash-can"></i>
+      </div>
+    `;
+    modalGallery.appendChild(modalFigure);
+
+    // ** Ajouter l'événement de suppression pour le WORK dans ma modale
+    document
+      .querySelector("#trash-" + newWork.id)
+      .addEventListener("click", () => {
+        deleteWork(newWork.id);
+      });
+  }
+
   // Afficher travaux dans ma modale
   function displayWorksModal(works) {
     const modalGallery = document.getElementById("modalGallery");
@@ -93,11 +124,16 @@ document.addEventListener("DOMContentLoaded", function () {
     })
       .then((response) => {
         if (response.ok) {
-          document.querySelector("#trash-" + workNumber).parentElement.remove();
-          const updatedWorks = works.filter((work) => {
-            return work.id !== workNumber;
-          });
-          displayWorks(updatedWorks);
+          // ** Résoudre bug > pouvoir en supprimer 2 d'un coup
+          const indexToRemove = works.findIndex(
+            (work) => work.id === workNumber
+          );
+          if (indexToRemove !== -1) {
+            works.splice(indexToRemove, 1);
+          }
+
+          displayWorks(works);
+          displayWorksModal(works);
         } else {
           console.error("Failed to delete work " + workNumber);
         }
@@ -185,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     document.getElementById("close").addEventListener("click", () => {
-      document.getElementId("modal").style.display = "none";
+      document.getElementById("modal").style.display = "none";
     });
 
     window.addEventListener("click", (event) => {
@@ -220,6 +256,20 @@ document.addEventListener("DOMContentLoaded", function () {
         modalAddPhoto.style.display = "none";
       }
     });
+  }
+
+  // ** Réinitialiser le formulaire après l'ajout d'un WORK
+  function resetForm() {
+    document.getElementById("newWorkTitle").value = "";
+    document.getElementById("category").selectedIndex = 0;
+
+    const newWorkImage = document.getElementById("fileInput");
+    newWorkImage.value = null;
+    document.getElementById("previewImage").src =
+      "/assets/images/input-img.png";
+
+    document.getElementById("uploadButton").style.display = "block";
+    document.getElementById("photoInfo").style.display = "block";
   }
 
   // Ajouter un WORK
@@ -292,13 +342,18 @@ document.addEventListener("DOMContentLoaded", function () {
         });
 
         if (response.ok) {
-          console.log("Yeees");
-          init();
-        } else console.error(response.status);
+          const newWork = await response.json();
+          addNewWorkToGallery(newWork);
+          document.getElementById("modalAddPhoto").style.display = "none";
+          resetForm();
+        } else {
+          console.error("Erreur:", response.status);
+        }
       } catch (error) {
         console.error("ça n'a pas fonctionné", error);
       }
     });
   }
+
   init();
 });
