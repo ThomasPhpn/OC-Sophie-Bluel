@@ -80,8 +80,8 @@ document.addEventListener("DOMContentLoaded", function () {
     modalGallery.appendChild(modalFigure);
 
     // ** Ajouter l'événement de suppression pour le WORK dans ma modale
-    document
-      .querySelector("#trash-" + newWork.id)
+    modalFigure
+      .querySelector(`#trash-${newWork.id}`)
       .addEventListener("click", () => {
         deleteWork(newWork.id);
       });
@@ -105,7 +105,8 @@ document.addEventListener("DOMContentLoaded", function () {
     works.forEach((work) => {
       document
         .querySelector("#trash-" + work.id)
-        .addEventListener("click", () => {
+        .addEventListener("click", (event) => {
+          event.stopPropagation(); // Résoudre bug suppression
           deleteWork(work.id);
         });
     });
@@ -124,16 +125,14 @@ document.addEventListener("DOMContentLoaded", function () {
     })
       .then((response) => {
         if (response.ok) {
-          // ** Résoudre bug > pouvoir en supprimer 2 d'un coup
           const indexToRemove = works.findIndex(
             (work) => work.id === workNumber
           );
           if (indexToRemove !== -1) {
             works.splice(indexToRemove, 1);
           }
-
+          document.querySelector(`#trash-${workNumber}`).parentElement.remove(); // résoudre bug suppression
           displayWorks(works);
-          displayWorksModal(works);
         } else {
           console.error("Failed to delete work " + workNumber);
         }
